@@ -22,7 +22,11 @@ TESTS ?= $(ALL_TESTS)
 # What to test in each case
 TEST_FLAVORS ?= decode
 
-ALL_TESTS = simpleTestData
+ALL_TESTS = $(shell \
+	capnp eval test.capnp allTests \
+	| sed 's/\[*"\([^"]*\)",*\]*/\1 /g')
+
+#simpleTestData
 
 PREP_TESTS = $(addprefix prepare_test_data-,$(TESTS))
 RUN_TESTS =  $(foreach case,$(TEST_FLAVORS),$(addprefix $(case)-,$(TESTS)))

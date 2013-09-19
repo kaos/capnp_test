@@ -17,9 +17,29 @@
 using Cxx = import "/capnp/c++.capnp";
 $Cxx.namespace("addressbook");
 
+
+########################################
+## List with all available tests
+########################################
+
+const allTests :List(Text) = 
+[
+  "simpleTest"
+];
+
+
+########################################
+## Define test data
+########################################
+
+const simpleTest :SimpleTest = ( int = 1234567890, msg = "a short message...");
+
+
+########################################
+## Types used by tests
+########################################
+
 struct SimpleTest {
   int @0 :Int32;
   msg @1 :Text;
 }
-
-const simpleTestData :SimpleTest = ( int = 1234567890, msg = "a short message...");
