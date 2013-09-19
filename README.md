@@ -78,6 +78,7 @@ kaos@cypher ~/src/ecapnp (master *)
 $ make check
 ++ TEST [decode-simpleTest]
 == PASS [decode-simpleTest]
+
 /home/kaos/src/ecapnp/bin/ecapnp_test done.
 ```
 
@@ -91,7 +92,8 @@ $ make check
 <   msg = "a short message..." )
 ---
 >   msg = "...egassem trohs a" )
-** FAIL [decode-simpleTest]
+## FAIL [decode-simpleTest]
+
 /home/kaos/src/ecapnp/bin/ecapnp_test done.
 ```
 
@@ -99,4 +101,4 @@ $ make check
 TODO
 ====
 
-More tests. Test encode. Test different packaging/streaming options. Default values. Etc..
+More tests. Test different packaging/streaming options. Default values. Etc..
