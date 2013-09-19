@@ -15,7 +15,7 @@
 @0xa510a585dee47e0b;
 
 using Cxx = import "/capnp/c++.capnp";
-$Cxx.namespace("addressbook");
+$Cxx.namespace("capnp_test");
 
 
 ########################################

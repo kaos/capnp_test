@@ -29,7 +29,7 @@ ALL_TESTS = $(shell \
 PREP_TESTS = $(addprefix prepare_test_data-,$(TESTS))
 RUN_TESTS =  $(foreach case,$(TEST_FLAVORS),$(addprefix $(case)-,$(TESTS)))
 
-test_type = `capnp eval test.capnp $(1)Type | sed 's/"//g'`
+test_type = $(shell capnp eval test.capnp $(1)Type | sed 's/"//g')
 
 all: $(PREP_TESTS) $(RUN_TESTS)
 	echo "$(CAPNP_TEST_APP) done."
@@ -39,7 +39,7 @@ start-%:
 
 prepare_test_data-%: test.capnp expect
 	capnp eval --short $< $* > expect/$*.txt
-	capnp eval --short --binary $< $* > expect/$*.bin
+	capnp eval --binary $< $* > expect/$*.bin
 
 expect:
 	mkdir $@
