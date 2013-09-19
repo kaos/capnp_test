@@ -12,28 +12,37 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-# capnp_test Makefile
+# This should be defined by the invoking environment, pointing to the
+# executable that will perform the requested test actions.
+CAPNP_TEST_APP ?= $(error CAPNP_TEST_APP was not defined)
 
-# temporary for now, meant to be provided on the command line or other
-# makefile...
-test = ./ecapnp_test.sh
+# List of test cases to run; defaults to all known tests
+TESTS ?= $(ALL_TESTS)
 
+# What to test in each case
+TEST_FLAVORS ?= decode
 
-TESTS = simpleTestData-decode
+ALL_TESTS = simpleTestData
 
-all: expect $(TESTS)
-	echo "All tests OK for $(test)"
+PREP_TESTS = $(addprefix prepare_test_data-,$(TESTS))
+RUN_TESTS =  $(foreach case,$(TEST_FLAVORS),$(addprefix $(case)-,$(TESTS)))
+
+all: $(PREP_TESTS) $(RUN_TESTS)
+	echo "$(CAPNP_TEST_APP) done."
+
+start-%:
+	printf "++ TEST [%s]\n" $*
+
+prepare_test_data-%: test.capnp expect
+	capnp eval $< $* > expect/$*.txt
+	capnp eval --binary $< $* > expect/$*.bin
 
 expect:
 	mkdir $@
 
-expect/%.txt: test.capnp
-	capnp eval $< $* > $@
-
-expect/%.bin: test.capnp
-	capnp eval --binary $< $* > $@
-
-%-decode: expect/%.txt expect/%.bin
-	cat expect/$*.bin \
-	| $(test) decode $* \
-	| diff expect/$*.txt -
+decode-%: start-decode-%
+	( cat expect/$*.bin \
+	| $(CAPNP_TEST_APP) decode $* \
+	| diff expect/$*.txt - \
+	&& printf "== PASS [%s]\n" $@) \
+	|| printf "** FAIL [%s]\n" $@
