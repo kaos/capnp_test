@@ -32,6 +32,7 @@ const allTests :List(Text) =
 ## Define test data
 ########################################
 
+const simpleTestType :Text = "SimpleTest";
 const simpleTest :SimpleTest = ( int = 1234567890, msg = "a short message...");
 
 

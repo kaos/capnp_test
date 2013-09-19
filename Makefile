@@ -20,7 +20,7 @@ CAPNP_TEST_APP ?= $(error CAPNP_TEST_APP was not defined)
 TESTS ?= $(ALL_TESTS)
 
 # What to test in each case
-TEST_FLAVORS ?= decode
+TEST_FLAVORS ?= decode encode
 
 ALL_TESTS = $(shell \
 	capnp eval test.capnp allTests \
@@ -29,6 +29,8 @@ ALL_TESTS = $(shell \
 PREP_TESTS = $(addprefix prepare_test_data-,$(TESTS))
 RUN_TESTS =  $(foreach case,$(TEST_FLAVORS),$(addprefix $(case)-,$(TESTS)))
 
+test_type = `capnp eval test.capnp $(1)Type | sed 's/"//g'`
+
 all: $(PREP_TESTS) $(RUN_TESTS)
 	echo "$(CAPNP_TEST_APP) done."
 
@@ -36,8 +38,8 @@ start-%:
 	printf "++ TEST [%s]\n" $*
 
 prepare_test_data-%: test.capnp expect
-	capnp eval $< $* > expect/$*.txt
-	capnp eval --binary $< $* > expect/$*.bin
+	capnp eval --short $< $* > expect/$*.txt
+	capnp eval --short --binary $< $* > expect/$*.bin
 
 expect:
 	mkdir $@
@@ -46,5 +48,12 @@ decode-%: start-decode-%
 	( cat expect/$*.bin \
 	| $(CAPNP_TEST_APP) decode $* \
 	| diff expect/$*.txt - \
-	&& printf "== PASS [%s]\n" $@) \
-	|| printf "** FAIL [%s]\n" $@
+	&& printf "== PASS [%s]\n\n" $@) \
+	|| printf "## FAIL [%s]\n\n" $@
+
+encode-%: start-encode-%
+	( $(CAPNP_TEST_APP) encode $* \
+	| capnp decode --short test.capnp $(call test_type,$*)\
+	| diff expect/$*.txt - \
+	&& printf "== PASS [%s]\n\n" $@) \
+	|| printf "## FAIL [%s]\n\n" $@
