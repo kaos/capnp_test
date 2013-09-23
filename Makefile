@@ -23,7 +23,7 @@ TESTS ?= $(ALL_TESTS)
 TEST_FLAVORS ?= decode encode
 
 ALL_TESTS = $(shell \
-	capnp eval test.capnp allTests \
+	capnp eval --short test.capnp allTests \
 	| sed 's/\[*"\([^"]*\)",*\]*/\1 /g')
 
 PREP_TESTS = $(addprefix prepare_test_data-,$(TESTS))

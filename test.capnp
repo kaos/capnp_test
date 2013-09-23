@@ -24,7 +24,8 @@ $Cxx.namespace("capnp_test");
 
 const allTests :List(Text) = 
 [
-  "simpleTest"
+  "simpleTest",
+  "textListTypeTest"
 ];
 
 
@@ -33,7 +34,10 @@ const allTests :List(Text) =
 ########################################
 
 const simpleTestType :Text = "SimpleTest";
-const simpleTest :SimpleTest = ( int = 1234567890, msg = "a short message...");
+const simpleTest :SimpleTest = (int = 1234567890, msg = "a short message...");
+
+const textListTypeTestType :Text = "ListTest";
+const textListTypeTest :ListTest = (textList = ["foo", "bar", "baz"]);
 
 
 ########################################
@@ -43,4 +47,11 @@ const simpleTest :SimpleTest = ( int = 1234567890, msg = "a short message...");
 struct SimpleTest {
   int @0 :Int32;
   msg @1 :Text;
+}
+
+struct ListTest {
+#  union {
+    textList @0 :List(Text);
+#   nextList @1 :...;
+#  }
 }
