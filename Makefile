@@ -37,7 +37,7 @@ EXEC_TEST = ./exec_test.sh
 
 .PHONY: all clean
 
-all: $(CAPNP_TEST_APP) $(EXPECT_FILES)
+all: $(EXPECT_FILES)
 	@(tot=0;pass=0;skip=0; \
 		for test in $(RUN_TESTS); do \
 			(( tot += 1 )) ; \
