@@ -27,15 +27,18 @@ ALL_TESTS = $(shell \
 	capnp eval --short test.capnp allTests \
 	| sed 's/\[*"\([^"]*\)",*\]*/\1 /g')
 
-PREP_TESTS = $(addprefix prepare_test_data-,$(TESTS))
+EXPECT_FILES = $(foreach test,$(TESTS),$(addprefix expect/$(test),.txt .bin))
 RUN_TESTS =  $(foreach case,$(TEST_FLAVORS),\
 	$(foreach test,$(TESTS),"$(case) $(test) $(call test_type,$(test))"))
-EXEC_TEST = ./exec_test.sh
 
 test_type = $(shell capnp eval test.capnp $(1)Type | sed 's/"//g')
 
-all: $(PREP_TESTS)
-	(tot=0;pass=0;skip=0;\
+EXEC_TEST = ./exec_test.sh
+
+.PHONY: all clean
+
+all: $(CAPNP_TEST_APP) $(EXPECT_FILES)
+	@(tot=0;pass=0;skip=0; \
 		for test in $(RUN_TESTS); do \
 			(( tot += 1 )) ; \
 			$(EXEC_TEST) $$test ; \
@@ -45,11 +48,16 @@ all: $(PREP_TESTS)
 			esac ; \
 		done ; \
 		(( tot -= skip )) ; \
-	echo "$(CAPNP_TEST_APP): $$pass/$$tot tests passsed ($$skip skipped).")
+		echo "$(CAPNP_TEST_APP): $$pass/$$tot tests passsed ($$skip skipped).")
 
-prepare_test_data-%: test.capnp expect
-	capnp eval --short $< $* > expect/$*.txt
-	capnp eval --binary $< $* > expect/$*.bin
+clean:
+	rm -rf expect
+
+expect/%.txt: test.capnp | expect
+	capnp eval --short $< $* > $@
+
+expect/%.bin: test.capnp | expect
+	capnp eval --binary $< $* > $@
 
 expect:
 	mkdir $@
