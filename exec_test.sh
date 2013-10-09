@@ -34,12 +34,13 @@ function run_test
 
 function decode_result
 {
-    [[ $STATUS == 0 ]] && capnp decode --short test.capnp $1 < test.bin
+    [[ $STATUS == 0 ]] && capnp decode --short test.capnp $1 < actual.bin
 }
 
 function check_result
 {
-    [[ $STATUS == 0 ]] && { diff expect/$2.txt actual.txt ; STATUS=$? ;}
+    [[ $STATUS == 0 ]] && { diff expect/$2.txt actual.txt ; STATUS=$? ;} \
+        || cat actual.*
 
     case $STATUS in
         0)   passed $* ;;
@@ -47,7 +48,6 @@ function check_result
         *)   failed $*
     esac
 
-    rm -f actual.txt
     return $STATUS
 }
 
@@ -58,8 +58,10 @@ case $1 in
         run_test decode $2 < expect/$2.bin > actual.txt
         check_result $1 $2 ;;
     encode)
-        run_test encode $2  > test.bin \
+        run_test encode $2  > actual.bin \
             && decode_result $3 > actual.txt
-        rm -f test.bin
         check_result $1 $2
 esac
+
+rm -f actual.*
+exit $STATUS
