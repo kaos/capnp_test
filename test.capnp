@@ -26,7 +26,8 @@ const allTests :List(Text) =
 [
   "simpleTest",
   "textListTypeTest",
-  "uInt8DefaultValueTest"
+  "uInt8DefaultValueTest",
+  "constTest"
 ];
 
 
@@ -43,6 +44,9 @@ const textListTypeTest :ListTest = (textList = ["foo", "bar", "baz"]);
 const uInt8DefaultValueTestType :Text = "TestDefaults";
 const uInt8DefaultValueTest :TestDefaults = (uInt8Field = 0);
 
+const constTestType :Text = "SimpleTest";
+const constTestValue :Text = "A const text test value.";
+const constTest :SimpleTest = (msg = .constTestValue);
 
 ########################################
 ## Types used by tests
