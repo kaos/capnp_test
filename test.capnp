@@ -17,6 +17,9 @@
 using Cxx = import "/capnp/c++.capnp";
 $Cxx.namespace("capnp_test");
 
+using Go = import "go.capnp";
+$Go.package("capnp_test");
+$Go.import("github.com/kaos/capnp_test");
 
 ########################################
 ## List with all available tests
@@ -35,8 +38,8 @@ const allTests :List(Text) =
 ## Define test data
 ########################################
 
-const simpleTestType :Text = "SimpleTest";
-const simpleTest :SimpleTest = (int = 1234567890, msg = "a short message...");
+const simpleTestType :Text = "SimpleTestStruct";
+const simpleTest :SimpleTestStruct = (int = 1234567890, msg = "a short message...");
 
 const textListTypeTestType :Text = "ListTest";
 const textListTypeTest :ListTest = (textList = ["foo", "bar", "baz"]);
@@ -44,15 +47,15 @@ const textListTypeTest :ListTest = (textList = ["foo", "bar", "baz"]);
 const uInt8DefaultValueTestType :Text = "TestDefaults";
 const uInt8DefaultValueTest :TestDefaults = (uInt8Field = 0);
 
-const constTestType :Text = "SimpleTest";
+const constTestType :Text = "SimpleTestStruct";
 const constTestValue :Text = "A const text test value.";
-const constTest :SimpleTest = (msg = .constTestValue);
+const constTest :SimpleTestStruct = (msg = .constTestValue);
 
 ########################################
 ## Types used by tests
 ########################################
 
-struct SimpleTest {
+struct SimpleTestStruct {
   int @0 :Int32;
   msg @1 :Text;
 }
