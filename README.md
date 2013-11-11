@@ -102,3 +102,7 @@ TODO
 ====
 
 More tests. Test different packaging/streaming options. Default values. Etc..
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/kaos/capnp_test/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
